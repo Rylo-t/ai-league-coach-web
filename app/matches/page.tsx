@@ -12,6 +12,7 @@ import type { MatchRow, AnalysisResponse } from "@/lib/types";
 function MatchesContent() {
   const searchParams = useSearchParams();
   const playerParam = searchParams.get("player") ?? "";
+  const region = searchParams.get("region") ?? undefined;
   const [gameName, tagLine] = playerParam.split("-");
 
   const [matches, setMatches] = useState<MatchRow[]>([]);
@@ -24,11 +25,11 @@ function MatchesContent() {
   useEffect(() => {
     if (!gameName || !tagLine) return;
     setIsLoadingMatches(true);
-    api.getMatches(gameName, tagLine)
+    api.getMatches(gameName, tagLine, 20, region)
       .then((data) => setMatches(data.matches))
       .catch((err) => setError(err instanceof Error ? err.message : "Failed to load matches"))
       .finally(() => setIsLoadingMatches(false));
-  }, [gameName, tagLine]);
+  }, [gameName, tagLine, region]);
 
   const handleSelectMatch = (riotMatchId: string) => {
     setSelectedMatchId(riotMatchId);
@@ -40,7 +41,7 @@ function MatchesContent() {
     setIsAnalyzing(true);
     setError(null);
     try {
-      const data = await api.analyzeMatch(selectedMatchId, gameName, tagLine);
+      const data = await api.analyzeMatch(selectedMatchId, gameName, tagLine, region);
       setAnalysis(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Analysis failed");

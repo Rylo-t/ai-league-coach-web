@@ -9,20 +9,22 @@ import type { PlayerInfo, MatchRow } from "@/lib/types";
 export default function Home() {
   const [player, setPlayer] = useState<PlayerInfo | null>(null);
   const [matches, setMatches] = useState<MatchRow[]>([]);
+  const [region, setRegion] = useState("na1");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSearch = async (gameName: string, tagLine: string) => {
+  const handleSearch = async (gameName: string, tagLine: string, selectedRegion: string) => {
     setIsLoading(true);
     setError(null);
     setPlayer(null);
     setMatches([]);
+    setRegion(selectedRegion);
 
     try {
-      const playerInfo = await api.lookupPlayer(gameName, tagLine);
+      const playerInfo = await api.lookupPlayer(gameName, tagLine, selectedRegion);
       setPlayer(playerInfo);
 
-      const matchData = await api.getMatches(gameName, tagLine);
+      const matchData = await api.getMatches(gameName, tagLine, 20, selectedRegion);
       setMatches(matchData.matches);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to look up player");
@@ -46,7 +48,7 @@ export default function Home() {
         <p className="text-center text-destructive">{error}</p>
       )}
 
-      {player && <PlayerCard player={player} matches={matches} />}
+      {player && <PlayerCard player={player} matches={matches} region={region} />}
     </div>
   );
 }

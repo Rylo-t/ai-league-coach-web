@@ -7,9 +7,10 @@ import type { PlayerInfo, MatchRow } from "@/lib/types";
 interface PlayerCardProps {
   player: PlayerInfo;
   matches: MatchRow[];
+  region?: string;
 }
 
-export function PlayerCard({ player, matches }: PlayerCardProps) {
+export function PlayerCard({ player, matches, region }: PlayerCardProps) {
   const playerParam = `${player.gameName}-${player.tagLine}`;
 
   const champCounts = new Map<number, number>();
@@ -48,12 +49,12 @@ export function PlayerCard({ player, matches }: PlayerCardProps) {
 
         <div className="flex gap-2">
           <Button asChild className="flex-1">
-            <Link href={`/pregame?player=${encodeURIComponent(playerParam)}`}>
+            <Link href={`/pregame?player=${encodeURIComponent(playerParam)}${region ? `&region=${region}` : ""}`}>
               Pre-Game Brief
             </Link>
           </Button>
           <Button asChild variant="secondary" className="flex-1">
-            <Link href={`/matches?player=${encodeURIComponent(playerParam)}`}>
+            <Link href={`/matches?player=${encodeURIComponent(playerParam)}${region ? `&region=${region}` : ""}`}>
               Match History
             </Link>
           </Button>

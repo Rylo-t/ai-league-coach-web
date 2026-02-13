@@ -25,15 +25,18 @@ class ApiClient {
     return res.json();
   }
 
-  async lookupPlayer(gameName: string, tagLine: string): Promise<PlayerInfo> {
+  async lookupPlayer(gameName: string, tagLine: string, region?: string): Promise<PlayerInfo> {
+    const query = region ? `?region=${region}` : "";
     return this.fetch<PlayerInfo>(
-      `/api/player/${encodeURIComponent(gameName)}/${encodeURIComponent(tagLine)}`
+      `/api/player/${encodeURIComponent(gameName)}/${encodeURIComponent(tagLine)}${query}`
     );
   }
 
-  async getMatches(gameName: string, tagLine: string, limit = 20): Promise<MatchListResponse> {
+  async getMatches(gameName: string, tagLine: string, limit = 20, region?: string): Promise<MatchListResponse> {
+    const params = new URLSearchParams({ limit: String(limit) });
+    if (region) params.set("region", region);
     return this.fetch<MatchListResponse>(
-      `/api/player/${encodeURIComponent(gameName)}/${encodeURIComponent(tagLine)}/matches?limit=${limit}`
+      `/api/player/${encodeURIComponent(gameName)}/${encodeURIComponent(tagLine)}/matches?${params}`
     );
   }
 
@@ -43,6 +46,7 @@ class ApiClient {
     champion: string;
     role: string;
     opponent?: string;
+    region?: string;
   }): Promise<PregameResponse> {
     const query = new URLSearchParams({
       gameName: params.gameName,
@@ -51,12 +55,15 @@ class ApiClient {
       role: params.role,
     });
     if (params.opponent) query.set("opponent", params.opponent);
+    if (params.region) query.set("region", params.region);
     return this.fetch<PregameResponse>(`/api/pregame?${query}`);
   }
 
-  async analyzeMatch(matchId: string, gameName: string, tagLine: string): Promise<AnalysisResponse> {
+  async analyzeMatch(matchId: string, gameName: string, tagLine: string, region?: string): Promise<AnalysisResponse> {
+    const params = new URLSearchParams({ gameName, tagLine });
+    if (region) params.set("region", region);
     return this.fetch<AnalysisResponse>(
-      `/api/analysis/match/${encodeURIComponent(matchId)}?gameName=${encodeURIComponent(gameName)}&tagLine=${encodeURIComponent(tagLine)}`,
+      `/api/analysis/match/${encodeURIComponent(matchId)}?${params}`,
       { method: "POST" }
     );
   }

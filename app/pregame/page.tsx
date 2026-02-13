@@ -10,6 +10,7 @@ import type { PregameResponse } from "@/lib/types";
 function PregameContent() {
   const searchParams = useSearchParams();
   const playerParam = searchParams.get("player") ?? "";
+  const regionParam = searchParams.get("region") ?? "na1";
   const defaultPlayer = playerParam.replace("-", "#");
 
   const [result, setResult] = useState<PregameResponse | null>(null);
@@ -22,6 +23,7 @@ function PregameContent() {
     champion: string;
     role: string;
     opponent?: string;
+    region?: string;
   }) => {
     setIsLoading(true);
     setError(null);
@@ -41,7 +43,7 @@ function PregameContent() {
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">Pre-Game Brief</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <PregameForm defaultPlayer={defaultPlayer} onSubmit={handleSubmit} isLoading={isLoading} />
+        <PregameForm defaultPlayer={defaultPlayer} defaultRegion={regionParam} onSubmit={handleSubmit} isLoading={isLoading} />
         <div>
           {error && <p className="text-destructive">{error}</p>}
           {result && <PregameResults data={result} />}
