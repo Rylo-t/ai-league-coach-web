@@ -13,9 +13,10 @@ interface PlayerCardProps {
 export function PlayerCard({ player, matches, region }: PlayerCardProps) {
   const playerParam = `${player.gameName}-${player.tagLine}`;
 
-  const champCounts = new Map<number, number>();
+  const champCounts = new Map<string, number>();
   for (const m of matches) {
-    champCounts.set(m.champion_id, (champCounts.get(m.champion_id) ?? 0) + 1);
+    const name = m.champion_name || `Champion_${m.champion_id}`;
+    champCounts.set(name, (champCounts.get(name) ?? 0) + 1);
   }
   const topChampions = Array.from(champCounts.entries())
     .sort((a, b) => b[1] - a[1])
@@ -37,9 +38,9 @@ export function PlayerCard({ player, matches, region }: PlayerCardProps) {
             <>
               <div className="text-muted-foreground">Top champions</div>
               <div>
-                {topChampions.map(([id, count]) => (
-                  <span key={id} className="mr-2">
-                    Champion_{id} ({count})
+                {topChampions.map(([name, count]) => (
+                  <span key={name} className="mr-2">
+                    {name} ({count})
                   </span>
                 ))}
               </div>

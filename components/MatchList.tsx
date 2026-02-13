@@ -29,7 +29,7 @@ export function MatchList({ matches, selectedMatchId, onSelect }: MatchListProps
           >
             <CardContent className="py-3 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <span className="font-medium">Champion_{match.champion_id}</span>
+                <span className="font-medium">{match.champion_name || `Champion_${match.champion_id}`}</span>
                 <Badge variant="outline" className="text-xs">{match.role}</Badge>
               </div>
               <div className="flex items-center gap-3 text-sm text-muted-foreground">

@@ -13,6 +13,7 @@ export interface MatchRow {
   game_duration: number;
   played_at: string;
   champion_id: number;
+  champion_name: string;
   role: string;
   kills: number;
   deaths: number;
