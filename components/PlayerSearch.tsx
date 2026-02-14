@@ -99,7 +99,12 @@ export function PlayerSearch({ onSearch, isLoading }: PlayerSearchProps) {
     const trimmed = riotId.trim();
     if (!trimmed) return;
     const separatorIdx = trimmed.indexOf("#") !== -1 ? trimmed.indexOf("#") : trimmed.lastIndexOf(" ");
-    if (separatorIdx === -1) return; // require gameName#tagLine
+    if (separatorIdx === -1) {
+      // No separator — use region label as tagLine
+      const regionLabel = REGIONS.find(r => r.value === region)?.label ?? region;
+      onSearch(trimmed, regionLabel, region);
+      return;
+    }
     const gameName = trimmed.slice(0, separatorIdx).trim();
     const tagLine = trimmed.slice(separatorIdx + 1).trim();
     if (gameName && tagLine) {
@@ -148,7 +153,7 @@ export function PlayerSearch({ onSearch, isLoading }: PlayerSearchProps) {
           </div>
         )}
       </div>
-      <Button type="submit" disabled={isLoading || !riotId.includes("#")}>
+      <Button type="submit" disabled={isLoading || !riotId.trim()}>
         {isLoading ? "Searching..." : "Search"}
       </Button>
     </form>
