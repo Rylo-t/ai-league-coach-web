@@ -24,7 +24,7 @@ export default function Home() {
       const playerInfo = await api.lookupPlayer(gameName, tagLine, selectedRegion);
       setPlayer(playerInfo);
 
-      const matchData = await api.getMatches(gameName, tagLine, 20, selectedRegion);
+      const matchData = await api.getMatches(gameName, tagLine, 5, selectedRegion);
       setMatches(matchData.matches);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to look up player");

@@ -25,7 +25,7 @@ function MatchesContent() {
   useEffect(() => {
     if (!gameName || !tagLine) return;
     setIsLoadingMatches(true);
-    api.getMatches(gameName, tagLine, 20, region)
+    api.getMatches(gameName, tagLine, 10, region)
       .then((data) => setMatches(data.matches))
       .catch((err) => setError(err instanceof Error ? err.message : "Failed to load matches"))
       .finally(() => setIsLoadingMatches(false));

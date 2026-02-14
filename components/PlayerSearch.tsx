@@ -41,9 +41,20 @@ export function PlayerSearch({ onSearch, isLoading }: PlayerSearchProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const [gameName, tagLine] = riotId.split("#");
+    const trimmed = riotId.trim();
+    if (!trimmed) return;
+    // Support both "GameName#TagLine" and "GameName TagLine"
+    const separatorIdx = trimmed.indexOf("#") !== -1 ? trimmed.indexOf("#") : trimmed.lastIndexOf(" ");
+    if (separatorIdx === -1) {
+      // Single word — use region label as tagLine (common pattern like "steez EUW")
+      const regionLabel = REGIONS.find(r => r.value === region)?.label ?? region;
+      onSearch(trimmed, regionLabel, region);
+      return;
+    }
+    const gameName = trimmed.slice(0, separatorIdx).trim();
+    const tagLine = trimmed.slice(separatorIdx + 1).trim();
     if (gameName && tagLine) {
-      onSearch(gameName.trim(), tagLine.trim(), region);
+      onSearch(gameName, tagLine, region);
     }
   };
 
@@ -62,12 +73,12 @@ export function PlayerSearch({ onSearch, isLoading }: PlayerSearchProps) {
         </SelectContent>
       </Select>
       <Input
-        placeholder="GameName#TagLine"
+        placeholder="GameName#TagLine or just GameName"
         value={riotId}
         onChange={(e) => setRiotId(e.target.value)}
         className="flex-1"
       />
-      <Button type="submit" disabled={isLoading || !riotId.includes("#")}>
+      <Button type="submit" disabled={isLoading || !riotId.trim()}>
         {isLoading ? "Searching..." : "Search"}
       </Button>
     </form>
