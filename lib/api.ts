@@ -25,6 +25,10 @@ class ApiClient {
     return res.json();
   }
 
+  async searchPlayers(q: string): Promise<{ results: { game_name: string; tag_line: string; region: string }[] }> {
+    return this.fetch(`/api/player/search?q=${encodeURIComponent(q)}`);
+  }
+
   async lookupPlayer(gameName: string, tagLine: string, region?: string): Promise<PlayerInfo> {
     const query = region ? `?region=${region}` : "";
     return this.fetch<PlayerInfo>(
