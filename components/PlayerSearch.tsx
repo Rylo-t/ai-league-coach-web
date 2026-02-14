@@ -33,6 +33,7 @@ export const REGIONS = [
 
 interface PlayerSearchProps {
   onSearch: (gameName: string, tagLine: string, region: string) => void;
+  onNameSearch?: (name: string) => void;
   isLoading: boolean;
 }
 
@@ -42,7 +43,7 @@ interface Suggestion {
   region: string;
 }
 
-export function PlayerSearch({ onSearch, isLoading }: PlayerSearchProps) {
+export function PlayerSearch({ onSearch, onNameSearch, isLoading }: PlayerSearchProps) {
   const [riotId, setRiotId] = useState("");
   const [region, setRegion] = useState("na1");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
@@ -100,9 +101,10 @@ export function PlayerSearch({ onSearch, isLoading }: PlayerSearchProps) {
     if (!trimmed) return;
     const separatorIdx = trimmed.indexOf("#") !== -1 ? trimmed.indexOf("#") : trimmed.lastIndexOf(" ");
     if (separatorIdx === -1) {
-      // No separator — use region label as tagLine
-      const regionLabel = REGIONS.find(r => r.value === region)?.label ?? region;
-      onSearch(trimmed, regionLabel, region);
+      // No separator — search by name to show matching accounts
+      if (onNameSearch) {
+        onNameSearch(trimmed);
+      }
       return;
     }
     const gameName = trimmed.slice(0, separatorIdx).trim();
